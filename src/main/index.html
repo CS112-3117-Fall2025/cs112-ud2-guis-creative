@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Workout Tracker — User Info</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <h1>Workout Tracker</h1>
+    <p class="tag">Enter your user info to begin</p>
+</header>
+
+<main>
+    <form id="userForm">
+        <label for="name">Name</label>
+        <input id="name" required placeholder="Type your name here!" />
+
+        <label for="age">Age</label>
+        <input id="age" type="number" min="0" required placeholder="Type your age here!" />
+
+        <div class="actions">
+            <button type="submit">Continue</button>
+            <a class="link" href="menu.html">Skip (use existing)</a>
+        </div>
+    </form>
+
+    <section class="note">
+        <strong>Note:</strong> Please enter your user info for a more personalized experience!
+    </section>
+</main>
+
+<footer>
+    <a href="about.html">About</a> · <a href="help.html">Help & Submission</a>
+</footer>
+
+<script src="app.js"></script>
+<script>
+    // initialize user if none
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('userForm');
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim() || 'N/A';
+        const age = parseInt(document.getElementById('age').value, 10) || 0;
+
+        try {
+          const user = new User(name, age);
+          saveUser(user);
+          window.location.href = 'menu.html';
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+</script>
+</body>
+</html>

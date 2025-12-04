@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Workout Detail</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><h1>Workout Details</h1></header>
+
+<main>
+    <section class="card" id="detailCard">
+        <p id="noDetail">No workout selected.</p>
+        <div id="detail"></div>
+        <div class="actions">
+            <a class="link" href="view_workouts.html">Back to list</a>
+            <button id="deleteBtn">Delete Workout</button>
+        </div>
+    </section>
+</main>
+
+<footer><a href="menu.html">Menu</a></footer>
+
+<script src="app.js"></script>
+<script>
+    function getIndexFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const i = params.get('i');
+      return i === null ? null : parseInt(i, 10);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const idx = getIndexFromQuery();
+      const detail = document.getElementById('detail');
+      const noDetail = document.getElementById('noDetail');
+
+      if (idx === null || Number.isNaN(idx)) {
+        noDetail.style.display = 'block';
+        detail.style.display = 'none';
+        return;
+      }
+
+      const user = loadUser();
+      if (!user || !user.workouts[idx]) {
+        noDetail.textContent = 'Workout not found.';
+        return;
+      }
+
+      const w = user.workouts[idx];
+      noDetail.style.display = 'none';
+      detail.style.display = 'block';
+
+      // Build detail HTML
+      let html = `<h2>${w.type}</h2><p><strong>Date:</strong> ${w.date}</p>`;
+      html += `<p><strong>Duration:</strong> ${w.duration} mins</p>`;
+      if (w.type === 'CardioWorkout') {
+        html += `<p><strong>Distance:</strong> ${w.distance} miles</p>`;
+        html += `<p><strong>Pace:</strong> ${w.pace} min/mile</p>`;
+      } else if (w.type === 'StrengthWorkout') {
+        html += `<p><strong>Sets:</strong> ${w.sets}</p>`;
+        html += `<p><strong>Reps:</strong> ${w.reps}</p>`;
+        html += `<p><strong>Weight:</strong> ${w.weight} lbs</p>`;
+      }
+      html += `<p><strong>Notes:</strong> ${w.notes}</p>`;
+      detail.innerHTML = html;
+
+      document.getElementById('deleteBtn').addEventListener('click', () => {
+        if (!confirm('Delete this workout?')) return;
+        user.workouts.splice(idx, 1);
+        saveUser(user);
+        window.location.href = 'view_workouts.html';
+      });
+    });
+</script>
+</body>
+</html>

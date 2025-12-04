@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Add Cardio Workout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><h1>Add Cardio Workout</h1></header>
+
+<main>
+    <form id="cardioForm">
+        <label for="date">Date (YYYY-MM-DD)</label>
+        <input id="date" placeholder="2025-10-05" required>
+
+        <label for="duration">Duration (minutes)</label>
+        <input id="duration" type="number" min="0" step="0.1" required>
+
+        <label for="notes">Notes</label>
+        <input id="notes" placeholder="Morning run">
+
+        <label for="distance">Distance (miles)</label>
+        <input id="distance" type="number" min="0" step="0.01" required>
+
+        <label for="pace">Pace (minutes per mile)</label>
+        <input id="pace" type="number" min="0" step="0.01" required>
+
+        <div class="actions">
+            <button type="submit">Add Cardio Workout</button>
+            <a class="link" href="menu.html">Back</a>
+        </div>
+    </form>
+
+    <section id="result" class="note" aria-live="polite"></section>
+</main>
+
+<footer><a href="view_workouts.html">See Workouts</a></footer>
+
+<script src="app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('cardioForm');
+      const result = document.getElementById('result');
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const date = document.getElementById('date').value || 'N/A';
+        const duration = parseFloat(document.getElementById('duration').value);
+        const notes = document.getElementById('notes').value || '';
+        const distance = parseFloat(document.getElementById('distance').value);
+        const pace = parseFloat(document.getElementById('pace').value);
+
+        try {
+          // validation similar to Java constructor (non-negative)
+          if (duration < 0 || distance < 0 || pace < 0) {
+            throw new Error('Workout values cannot be negative.');
+          }
+
+          const cw = new CardioWorkout(date, duration, notes, distance, pace);
+          const user = loadUserOrThrow();
+          user.addWorkout(cw);
+          saveUser(user);
+          result.textContent = 'Cardio workout added!';
+          console.log('Cardio workout added:', cw.toString());
+          form.reset();
+        } catch (err) {
+          result.textContent = 'Error: ' + err.message;
+        }
+      });
+    });
+</script>
+</body>
+</html>

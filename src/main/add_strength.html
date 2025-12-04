@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Add Strength Workout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><h1>Add Strength Workout</h1></header>
+
+<main>
+    <form id="strengthForm">
+        <label for="date">Date (YYYY-MM-DD)</label>
+        <input id="date" placeholder="2025-10-06" required>
+
+        <label for="duration">Duration (minutes)</label>
+        <input id="duration" type="number" min="0" step="0.1" required>
+
+        <label for="notes">Notes</label>
+        <input id="notes" placeholder="Leg day">
+
+        <label for="sets">Sets</label>
+        <input id="sets" type="number" min="0" required>
+
+        <label for="reps">Reps</label>
+        <input id="reps" type="number" min="0" required>
+
+        <label for="weight">Weight (lbs)</label>
+        <input id="weight" type="number" min="0" step="0.1" required>
+
+        <div class="actions">
+            <button type="submit">Add Strength Workout</button>
+            <a class="link" href="menu.html">Back</a>
+        </div>
+    </form>
+
+    <section id="result" class="note" aria-live="polite"></section>
+</main>
+
+<footer><a href="view_workouts.html">See Workouts</a></footer>
+
+<script src="app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('strengthForm');
+      const result = document.getElementById('result');
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const date = document.getElementById('date').value || 'N/A';
+        const duration = parseFloat(document.getElementById('duration').value);
+        const notes = document.getElementById('notes').value || '';
+        const sets = parseInt(document.getElementById('sets').value, 10);
+        const reps = parseInt(document.getElementById('reps').value, 10);
+        const weight = parseFloat(document.getElementById('weight').value);
+
+        try {
+          if (duration < 0 || sets < 0 || reps < 0 || weight < 0) {
+            // mimic your InvalidWorkoutException usage
+            throw new InvalidWorkoutException('Workout values cannot be negative.');
+          }
+
+          const sw = new StrengthWorkout(date, duration, notes, sets, reps, weight);
+          const user = loadUserOrThrow();
+          user.addWorkout(sw);
+          saveUser(user);
+          result.textContent = 'Strength workout added!';
+          console.log('Strength workout added:', sw.toString());
+          form.reset();
+        } catch (err) {
+          result.textContent = 'Error: ' + err.message;
+        }
+      });
+    });
+</script>
+</body>
+</html>
